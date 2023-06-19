@@ -35,13 +35,25 @@ stages:
     #   inputs:
     #     mavenPomFile: 'pom.xml'
 
-    - task: CopyFiles@2
-      displayName: 'Copy Files to artifact staging directory'
+    - task: ArchiveFiles@2
+      displayName: 'Archive files'
       inputs:
-        SourceFolder: '$(System.DefaultWorkingDirectory)'
-        Contents: '**/target/*.?(war|jar)'
-        TargetFolder: $(Build.ArtifactStagingDirectory)
-    - task: PublishBuildArtifacts@1
-      inputs:
-          pathToPublish: $(Build.ArtifactStagingDirectory)
-          artifactName: MyBuildOutputs
+          rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+          includeRootFolder: false
+          archiveType: zip
+          archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+          replaceExistingArchive: true
+
+    - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      artifact: drop
+
+    # - task: CopyFiles@2
+    #   displayName: 'Copy Files to artifact staging directory'
+    #   inputs:
+    #     SourceFolder: '$(System.DefaultWorkingDirectory)'
+    #     Contents: '**/target/*.?(war|jar)'
+    #     TargetFolder: $(Build.ArtifactStagingDirectory)
+    # - task: PublishBuildArtifacts@1
+    #   inputs:
+    #       pathToPublish: $(Build.ArtifactStagingDirectory)
+    #       artifactName: MyBuildOutputs
