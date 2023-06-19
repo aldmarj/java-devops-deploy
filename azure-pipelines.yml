@@ -30,10 +30,10 @@ stages:
       vmImage: $(vmImageName)
 
     steps:
-    - task: Maven@3
-      displayName: 'Maven Package'
-      inputs:
-        mavenPomFile: 'pom.xml'
+    # - task: Maven@3
+    #   displayName: 'Maven Package'
+    #   inputs:
+    #     mavenPomFile: 'pom.xml'
 
     - task: CopyFiles@2
       displayName: 'Copy Files to artifact staging directory'
@@ -41,6 +41,7 @@ stages:
         SourceFolder: '$(System.DefaultWorkingDirectory)'
         Contents: '**/target/*.?(war|jar)'
         TargetFolder: $(Build.ArtifactStagingDirectory)
-
-    - upload: $(Build.ArtifactStagingDirectory)
-      artifact: drop
+    - task: PublishBuildArtifacts@1
+      inputs:
+          pathToPublish: $(Build.ArtifactStagingDirectory)
+          artifactName: MyBuildOutputs
